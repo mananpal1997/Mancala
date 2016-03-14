@@ -12,6 +12,7 @@ public class NodeGame {
     private Player player;
     private Player opponent;
     private int heuristicValue;
+    private static int nodeCount = 0;
 
     public NodeGame(Board passedBoard, Player player, Player opponent) {
         this(null, passedBoard, player, opponent, 0);
@@ -25,8 +26,12 @@ public class NodeGame {
         this.player = player.copy();
         this.opponent = opponent.copy();
         decisionChosen = move;
+        nodeCount++;
     }
 
+    public int getNodeCount() {
+        return nodeCount;
+    }
 
 /*    public NodeGame(NodeGame parent, Board passedBoard, Player player) {
         this.parent = parent;

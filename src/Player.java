@@ -142,7 +142,8 @@ public class Player {
         root.createFringe(true);
         int max = -99999999;
         for(NodeGame aNode : root.getChildren()) {
-            aNode.setHeuristicValue(miniMax(aNode, 4, false));
+            //aNode.setHeuristicValue(miniMax(aNode, 4, false));
+            aNode.setHeuristicValue(alphaBeta(aNode, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false));
             if(aNode.getHeuristicValue() >= max) {
                 max = aNode.getDecisionChosen();
             }
@@ -196,6 +197,7 @@ public class Player {
     }
 
     public int miniMax(NodeGame root, int depth, boolean isMaximizingPlayer) {
+        System.out.println("Node number : " + root.getNodeCount() + " opened.");
         if(depth == 0 || root == null) {
             //Check if the game is done
             //State is dead
@@ -204,7 +206,7 @@ public class Player {
 
         if(isMaximizingPlayer) {
             root.createFringe(true);
-            int bestValue = -9999999;
+            int bestValue = Integer.MIN_VALUE;
             int value;
             for(NodeGame aNode : root.getChildren()) {
                 value = miniMax(aNode, depth - 1, false);
@@ -213,7 +215,7 @@ public class Player {
             return bestValue;
         } else {
             root.createFringe(false);
-            int bestValue = +9999999;
+            int bestValue = Integer.MAX_VALUE;
             int value;
             for(NodeGame aNode : root.getChildren()) {
                 value = miniMax(aNode, depth - 1, true);
@@ -222,4 +224,38 @@ public class Player {
             return bestValue;
         }
     }
+
+    public int alphaBeta(NodeGame root, int depth, int alpha, int beta, boolean isMaximizingPlayer) {
+        System.out.println("Node number : " + root.getNodeCount() + " opened.");
+        if(depth == 0 || root == null) {
+            //Check if the game is done
+            //State is dead
+            return root.getBoard().getMancalaDifference(root.getisPlayer1Max());
+        }
+
+        if(isMaximizingPlayer) {
+            root.createFringe(true);
+            int value;
+            for(NodeGame aNode : root.getChildren()) {
+                value = alphaBeta(aNode, depth - 1, alpha, beta, false);
+                alpha = Math.max(alpha, value);
+                if(alpha >= beta) {
+                    break;
+                }
+            }
+            return alpha;
+        } else {
+            root.createFringe(false);
+            int value;
+            for(NodeGame aNode : root.getChildren()) {
+                value = alphaBeta(aNode, depth - 1, alpha, beta, true);
+                beta = Math.min(beta, value);
+                if(alpha >= beta) {
+                    break;
+                }
+            }
+            return beta;
+        }
+    }
+
 }
