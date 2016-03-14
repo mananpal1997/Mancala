@@ -32,6 +32,14 @@ public class Player {
         initializePlayerBoardView();
     }
 
+    public Player copy() {
+        return new Player(new Board(board), isPlayer1, isAI);
+    }
+
+    public int getSideOfBoard() {
+        return sideOfBoard;
+    }
+
     //Convert 2D array to Single Array for easy bi-directional navigation
     public void initializePlayerBoardView() {
         int counter = 0;
@@ -110,6 +118,71 @@ public class Player {
                }
             } else {
                 if(currentHole.isMancala() && currentHole.isBlue()) {
+                    System.out.println("Encountered a mancala that p2 can't go on at : " + indexHoleMap.get(choice + counter).getKey());
+                    counter++;
+                } else {
+                    System.out.println("Key of the hole is: " + indexHoleMap.get(choice + counter).getKey());
+                    indexHoleMap.get(choice + counter).addStone();
+                    counter++;
+                    stoneIncrementer++;
+                }
+            }
+        }
+    }
+
+    public void moveAI(Player human){
+        ArrayList<Integer> choicesMovement = new ArrayList<>();
+        for(int i = 1; i < board.getWidth() - 1 ; i++) {
+            if(!board.getHole(sideOfBoard, i).isEmpty()) {
+                choicesMovement.add(i);
+                System.out.print(i + " ");
+            }
+        }
+        NodeGame root = new NodeGame(board, this, human);
+        root.createFringe(true);
+        int max = -99999999;
+        for(NodeGame aNode : root.getChildren()) {
+            aNode.setHeuristicValue(miniMax(aNode, 4, false));
+            if(aNode.getHeuristicValue() >= max) {
+                max = aNode.getDecisionChosen();
+            }
+        }
+        //int choice = s.nextInt();
+        //while(!choicesMovement.contains(choice)) {
+            //System.out.println("Invalid choice: " + choice);
+            //choice = s.nextInt();
+        //}
+       // int choice = miniMax(root, 4, true);
+        int choice = max;
+        System.out.println("The choice choosed by MinMax was : " + choice);
+        executeMove(choice);
+    }
+
+    public void executeMove(int choice) {
+        Hole chosenHole = board.getHole(sideOfBoard, choice);
+        int numStones = chosenHole.getStones();
+        chosenHole.removeStones();
+        if(isPlayer1) {
+            choice = board.getWidth() - 1 - choice;
+        }
+        int counter = 1;
+        int stoneIncrementer = 1;
+        while(stoneIncrementer <= numStones) {
+            if(choice + counter > board.getWidth()*2 - 1) {
+                counter = 0;
+                choice = 0;
+            }
+            Hole currentHole = indexHoleMap.get(choice + counter);
+            if(isPlayer1) {
+                if(currentHole.isMancala() && !currentHole.isBlue()) {
+                    counter++;
+                } else {
+                    indexHoleMap.get(choice + counter).addStone();
+                    counter++;
+                    stoneIncrementer++;
+                }
+            } else {
+                if(currentHole.isMancala() && currentHole.isBlue()) {
                     //System.out.println("Encountered a mancala that p2 can't go on at : " + indexHoleMap.get(choice + counter).getKey());
                     counter++;
                 } else {
@@ -122,7 +195,31 @@ public class Player {
         }
     }
 
-    public void moveAI(){
+    public int miniMax(NodeGame root, int depth, boolean isMaximizingPlayer) {
+        if(depth == 0 || root == null) {
+            //Check if the game is done
+            //State is dead
+            return root.getBoard().getMancalaDifference(root.getisPlayer1Max());
+        }
 
+        if(isMaximizingPlayer) {
+            root.createFringe(true);
+            int bestValue = -9999999;
+            int value;
+            for(NodeGame aNode : root.getChildren()) {
+                value = miniMax(aNode, depth - 1, false);
+                bestValue = Math.max(bestValue, value);
+            }
+            return bestValue;
+        } else {
+            root.createFringe(false);
+            int bestValue = +9999999;
+            int value;
+            for(NodeGame aNode : root.getChildren()) {
+                value = miniMax(aNode, depth - 1, true);
+                bestValue = Math.min(bestValue, value);
+            }
+            return bestValue;
+        }
     }
 }

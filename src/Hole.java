@@ -25,6 +25,18 @@ public class Hole {
         if(makeRed == true) setRed();
     }
 
+    public Hole copy() {
+
+        Hole copiedVersion = new Hole(this.stones, this.row, this.column,
+            this.isMancala);
+
+        if(!this.isBlue()) {
+             copiedVersion.setRed();
+        }
+
+        return copiedVersion;
+    }
+
     //Set owner, true => Player1/Blue , false => Player2/Red
     public void setRed() {
         isBlue = false;

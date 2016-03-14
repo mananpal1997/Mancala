@@ -10,7 +10,7 @@ public class Board {
     public static int DEFAULT_FILLED_CIRCLES = 6;
     public static int DEFAULT_EMPTY_CIRCLES = 2;
     public static int HEIGHT = 2;
-    public static int DEFAULT_STONES = 1;
+    public static int DEFAULT_STONES = 4;
     public static int EMPTY = 0;
 
     //Fields
@@ -35,6 +35,17 @@ public class Board {
         initBoard();
     }
 
+    public Board(Board passedBoard) {
+        width = passedBoard.width;
+        board = new String[passedBoard.HEIGHT][width];
+        map = new HashMap<>();
+        starting_stone_count = passedBoard.starting_stone_count;
+        for(String key : passedBoard.map.keySet()) {
+            Hole copiedHole = passedBoard.map.get(key).copy();
+            this.map.put(key, copiedHole);
+        }
+    }
+
     //Initialize representation of board
     private void initBoard() {
         initHashMap();
@@ -54,6 +65,20 @@ public class Board {
         //Mancalas on right side of the board
         map.put(generateKey(0, width - 1), new Hole(EMPTY, 0, width - 1, true));
         map.put(generateKey(1, width - 1), new Hole(EMPTY, 1, width - 1, true, true));
+    }
+
+    public int getMancalaDifference(int isPlayer1) {
+        int mancalaP1Left = map.get(generateKey(0,0)).getStones();
+        int mancalaP1Right = map.get(generateKey(0,width - 1)).getStones();
+        int mancalaP2Left = map.get(generateKey(1,0)).getStones();
+        int mancalaP2Right = map.get(generateKey(1,width - 1)).getStones();
+
+        if(isPlayer1 == 0) {
+            return (mancalaP1Left + mancalaP1Right) - (mancalaP2Left + mancalaP2Right );
+        } else {
+            return (mancalaP2Left + mancalaP2Right) - (mancalaP1Left + mancalaP1Right );
+        }
+
     }
 
     //Create a mapping of Location in Board (2D Array) => Number of Stones
