@@ -1,9 +1,10 @@
+package game;
+
 /**
- * Created by admin on 2016-03-09.
+ * 
  */
 public class Hole {
 
-    //Fields
     private int stones;
     private int row;
     private int column;
@@ -37,7 +38,6 @@ public class Hole {
         return copiedVersion;
     }
 
-    //Set owner, true => Player1/Blue , false => Player2/Red
     public void setRed() {
         isBlue = false;
     }

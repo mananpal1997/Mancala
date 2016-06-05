@@ -1,43 +1,39 @@
+package game;
+
 import java.util.HashMap;
-import java.util.Arrays;
 
 /**
- * Created by admin on 2016-03-09.
+ *
  */
 public class Board {
 
-    //Globals
     public static int DEFAULT_FILLED_CIRCLES = 6;
     public static int DEFAULT_EMPTY_CIRCLES = 2;
     public static int HEIGHT = 2;
     public static int DEFAULT_STONES = 4;
     public static int EMPTY = 0;
 
-    //Fields
     private String[][] board;
     private HashMap<String, Hole> map;
     private int width;
     private int starting_stone_count;
 
-    //Constructors
     public Board() {
         this(DEFAULT_FILLED_CIRCLES, DEFAULT_STONES);
     }
 
     public Board(int numCircles, int stones) {
-
         width = numCircles + DEFAULT_EMPTY_CIRCLES;
         board = new String[HEIGHT][width];
         map = new HashMap<>();
         starting_stone_count = stones;
 
-        //Fill representation & Initialize Holes
         initBoard();
     }
 
     public Board(Board passedBoard) {
         width = passedBoard.width;
-        board = new String[passedBoard.HEIGHT][width];
+        board = new String[Board.HEIGHT][width];
         map = new HashMap<>();
         starting_stone_count = passedBoard.starting_stone_count;
         for(String key : passedBoard.map.keySet()) {
@@ -46,7 +42,6 @@ public class Board {
         }
     }
 
-    //Initialize representation of board
     private void initBoard() {
         initHashMap();
     }
@@ -55,14 +50,13 @@ public class Board {
         return width;
     }
 
-    //Set Mancala representations to 0 initially
     private void initMancalaValues() {
 
-        //Mancalas on left side of board
+        //Mancala on left side of board
         map.put(generateKey(0, 0), new Hole(EMPTY, 0, 0, true));
         map.put(generateKey(1, 0), new Hole(EMPTY, 1, 0, true, true));
 
-        //Mancalas on right side of the board
+        //Mancala on right side of the board
         map.put(generateKey(0, width - 1), new Hole(EMPTY, 0, width - 1, true));
         map.put(generateKey(1, width - 1), new Hole(EMPTY, 1, width - 1, true, true));
     }
@@ -75,10 +69,10 @@ public class Board {
 
         if(isPlayer1 == 0) {
             return (mancalaP1Left + mancalaP1Right) - (mancalaP2Left + mancalaP2Right );
-        } else {
+        }
+        else {
             return (mancalaP2Left + mancalaP2Right) - (mancalaP1Left + mancalaP1Right );
         }
-
     }
 
     //Create a mapping of Location in Board (2D Array) => Number of Stones
@@ -108,17 +102,16 @@ public class Board {
             for(int j = 0; j < width ; j++) {
                 if(j != width - 1) {
                     System.out.print(getHole(i, j) + "-");
-                } else {
+                }
+                else {
                     System.out.print(getHole(i, j));
                 }
-
             }
             System.out.println();
         }
         System.out.println("\n");
     }
 
-    //Returns a boolean. True => Player1 Won, False => Player2 Won
     public boolean whoWon() {
         boolean isPlayer1Winner = false;
         Integer[] scoreHolder = countMancala();
@@ -145,22 +138,22 @@ public class Board {
 
         boolean isDone = false;
 
-        //Check player1 holes (Blue)
+        //Check player1 holes
         for(int i = 1; i < width - 1 ; i++) {
             if(getHole(0, i).isEmpty()) {
                 isDone = true;
-            } else {
+            }
+            else {
                 isDone = false;
                 break;
             }
         }
 
-        //If Player1 Side was Empty, Game has ended
         if(isDone) {
             return isDone;
         }
 
-        //If not, check Player2's side
+        //Check Player2 holes
         for(int i = 1; i < width - 1 ; i++) {
             if(getHole(1, i).isEmpty()) {
                 isDone = true;
@@ -169,10 +162,6 @@ public class Board {
                 break;
             }
         }
-
-        //Return if player2 was empty or not
         return isDone;
     }
 }
-
-

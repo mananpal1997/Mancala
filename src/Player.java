@@ -1,11 +1,12 @@
-/**
- * Created by admin on 2016-03-10.
- */
+package game;
 
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Player {
 
     private boolean isAI;
@@ -118,10 +119,10 @@ public class Player {
                }
             } else {
                 if(currentHole.isMancala() && currentHole.isBlue()) {
-                    System.out.println("Encountered a mancala that p2 can't go on at : " + indexHoleMap.get(choice + counter).getKey());
+                    //System.out.println("Encountered a mancala that p2 can't go on at : " + indexHoleMap.get(choice + counter).getKey());
                     counter++;
                 } else {
-                    System.out.println("Key of the hole is: " + indexHoleMap.get(choice + counter).getKey());
+                    //System.out.println("Key of the hole is: " + indexHoleMap.get(choice + counter).getKey());
                     indexHoleMap.get(choice + counter).addStone();
                     counter++;
                     stoneIncrementer++;
@@ -142,18 +143,12 @@ public class Player {
         root.createFringe(true);
         int max = -99999999;
         for(NodeGame aNode : root.getChildren()) {
-            //aNode.setHeuristicValue(miniMax(aNode, 4, false));
             aNode.setHeuristicValue(alphaBeta(aNode, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false));
             if(aNode.getHeuristicValue() >= max) {
                 max = aNode.getDecisionChosen();
             }
         }
-        //int choice = s.nextInt();
-        //while(!choicesMovement.contains(choice)) {
-            //System.out.println("Invalid choice: " + choice);
-            //choice = s.nextInt();
-        //}
-       // int choice = miniMax(root, 4, true);
+
         int choice = max;
         System.out.println("The choice choosed by MinMax was : " + choice);
         executeMove(choice);
@@ -184,10 +179,8 @@ public class Player {
                 }
             } else {
                 if(currentHole.isMancala() && currentHole.isBlue()) {
-                    //System.out.println("Encountered a mancala that p2 can't go on at : " + indexHoleMap.get(choice + counter).getKey());
                     counter++;
                 } else {
-                    //System.out.println("Key of the hole is: " + indexHoleMap.get(choice + counter).getKey());
                     indexHoleMap.get(choice + counter).addStone();
                     counter++;
                     stoneIncrementer++;
@@ -200,7 +193,6 @@ public class Player {
         System.out.println("Node number : " + root.getNodeCount() + " opened.");
         if(depth == 0 || root == null) {
             //Check if the game is done
-            //State is dead
             return root.getBoard().getMancalaDifference(root.getisPlayer1Max());
         }
 
@@ -229,7 +221,6 @@ public class Player {
         System.out.println("Node number : " + root.getNodeCount() + " opened.");
         if(depth == 0 || root == null) {
             //Check if the game is done
-            //State is dead
             return root.getBoard().getMancalaDifference(root.getisPlayer1Max());
         }
 
@@ -257,5 +248,4 @@ public class Player {
             return beta;
         }
     }
-
 }
